@@ -13,6 +13,7 @@ PIN5                EQU     0x20            ; 00100000
 DUREE               EQU     0x002FFFFF
 
         ENTRY
+		;-----------
         EXPORT __main
 
 __main
