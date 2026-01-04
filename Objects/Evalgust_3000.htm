@@ -1,0 +1,252 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html><head>
+<title>Static Call Graph - [.\Objects\Evalgust_3000.axf]</title></head>
+<body><HR>
+<H1>Static Call Graph for image .\Objects\Evalgust_3000.axf</H1><HR>
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Sun Jan  4 16:05:22 2026
+<BR><P>
+<H3>Maximum Stack Usage =          0 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+Call chain for Maximum Stack Depth:</H3>
+
+<P>
+<H3>
+Functions with no stack information
+</H3><UL>
+ <LI><a href="#[0]">Reset_Handler</a>
+ <LI><a href="#[4]">MOTEUR_INIT</a>
+ <LI><a href="#[5]">MOTEUR_DROIT_ON</a>
+ <LI><a href="#[6]">MOTEUR_DROIT_OFF</a>
+ <LI><a href="#[7]">MOTEUR_GAUCHE_ON</a>
+ <LI><a href="#[8]">MOTEUR_GAUCHE_OFF</a>
+ <LI><a href="#[9]">MOTEUR_DROIT_ARRIERE</a>
+ <LI><a href="#[a]">MOTEUR_DROIT_AVANT</a>
+ <LI><a href="#[b]">MOTEUR_GAUCHE_ARRIERE</a>
+ <LI><a href="#[c]">MOTEUR_GAUCHE_AVANT</a>
+ <LI><a href="#[d]">MOTEUR_DROIT_INVERSE</a>
+ <LI><a href="#[e]">MOTEUR_GAUCHE_INVERSE</a>
+ <LI><a href="#[22]">__main</a>
+ <LI><a href="#[f]">IO_INIT</a>
+ <LI><a href="#[10]">LED1_ON</a>
+ <LI><a href="#[11]">LED1_OFF</a>
+ <LI><a href="#[12]">LED2_ON</a>
+ <LI><a href="#[13]">LED2_OFF</a>
+ <LI><a href="#[14]">ALL_LEDS_ON</a>
+ <LI><a href="#[15]">ALL_LEDS_OFF</a>
+ <LI><a href="#[16]">LED_TOGGLE</a>
+ <LI><a href="#[17]">BUMPER_RIGHT_READ</a>
+ <LI><a href="#[18]">BUMPER_LEFT_READ</a>
+ <LI><a href="#[19]">SW1_READ</a>
+ <LI><a href="#[1a]">SW2_READ</a>
+ <LI><a href="#[1b]">MEMORY_INIT</a>
+ <LI><a href="#[1c]">MEMORY_PUSH_FORWARD</a>
+ <LI><a href="#[1d]">MEMORY_PUSH_PIVOT_LEFT</a>
+ <LI><a href="#[1e]">MEMORY_PUSH_PIVOT_RIGHT</a>
+ <LI><a href="#[1f]">MEMORY_GET_COUNT</a>
+ <LI><a href="#[20]">MEMORY_IS_FULL</a>
+ <LI><a href="#[21]">MEMORY_CLEAR</a>
+ <LI><a href="#[1]">NmiSR</a>
+ <LI><a href="#[2]">FaultISR</a>
+ <LI><a href="#[3]">IntDefaultHandler</a>
+</UL>
+</UL>
+<P>
+<H3>
+Mutually Recursive functions
+</H3> <LI><a href="#[1]">NmiSR</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[1]">NmiSR</a><BR>
+ <LI><a href="#[2]">FaultISR</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[2]">FaultISR</a><BR>
+ <LI><a href="#[3]">IntDefaultHandler</a>&nbsp;&nbsp;&nbsp;&rArr;&nbsp;&nbsp;&nbsp;<a href="#[3]">IntDefaultHandler</a><BR>
+</UL>
+<P>
+<H3>
+Function Pointers
+</H3><UL>
+ <LI><a href="#[2]">FaultISR</a> from startup.o(RESET) referenced from startup.o(RESET)
+ <LI><a href="#[3]">IntDefaultHandler</a> from startup.o(RESET) referenced 121 times from startup.o(RESET)
+ <LI><a href="#[1]">NmiSR</a> from startup.o(RESET) referenced from startup.o(RESET)
+ <LI><a href="#[0]">Reset_Handler</a> from startup.o(RESET) referenced from startup.o(RESET)
+</UL>
+<P>
+<H3>
+Global Symbols
+</H3>
+<P><STRONG><a name="[0]"></a>Reset_Handler</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup.o(RESET))
+<BR><BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> startup.o(RESET)
+</UL>
+<P><STRONG><a name="[4]"></a>MOTEUR_INIT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[5]"></a>MOTEUR_DROIT_ON</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[6]"></a>MOTEUR_DROIT_OFF</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[7]"></a>MOTEUR_GAUCHE_ON</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[8]"></a>MOTEUR_GAUCHE_OFF</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[9]"></a>MOTEUR_DROIT_ARRIERE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[a]"></a>MOTEUR_DROIT_AVANT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[b]"></a>MOTEUR_GAUCHE_ARRIERE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[c]"></a>MOTEUR_GAUCHE_AVANT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[d]"></a>MOTEUR_DROIT_INVERSE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[e]"></a>MOTEUR_GAUCHE_INVERSE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_moteur.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[22]"></a>__main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_priseenmain_moteurs.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[1a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SW2_READ
+<LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SW1_READ
+<LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_PUSH_PIVOT_RIGHT
+<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_PUSH_PIVOT_LEFT
+<LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_PUSH_FORWARD
+<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_IS_FULL
+<LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_INIT
+<LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_GET_COUNT
+<LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_CLEAR
+<LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LED2_ON
+<LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LED1_ON
+<LI><a href="#[f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IO_INIT
+<LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BUMPER_RIGHT_READ
+<LI><a href="#[18]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BUMPER_LEFT_READ
+<LI><a href="#[14]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ALL_LEDS_ON
+<LI><a href="#[15]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ALL_LEDS_OFF
+<LI><a href="#[c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_GAUCHE_AVANT
+<LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_GAUCHE_ARRIERE
+<LI><a href="#[a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_DROIT_AVANT
+<LI><a href="#[9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_DROIT_ARRIERE
+<LI><a href="#[8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_GAUCHE_OFF
+<LI><a href="#[7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_GAUCHE_ON
+<LI><a href="#[6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_DROIT_OFF
+<LI><a href="#[5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_DROIT_ON
+<LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MOTEUR_INIT
+</UL>
+<BR>[Called By]<UL><LI><a href="#[0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Reset_Handler
+</UL>
+
+<P><STRONG><a name="[f]"></a>IO_INIT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[10]"></a>LED1_ON</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[11]"></a>LED1_OFF</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[12]"></a>LED2_ON</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[13]"></a>LED2_OFF</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[14]"></a>ALL_LEDS_ON</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[15]"></a>ALL_LEDS_OFF</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[16]"></a>LED_TOGGLE</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text), UNUSED, KEPT)
+
+<P><STRONG><a name="[17]"></a>BUMPER_RIGHT_READ</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[18]"></a>BUMPER_LEFT_READ</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[19]"></a>SW1_READ</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[1a]"></a>SW2_READ</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_config_io.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[1b]"></a>MEMORY_INIT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_memory.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[1c]"></a>MEMORY_PUSH_FORWARD</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_memory.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_IS_FULL
+</UL>
+<BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[1d]"></a>MEMORY_PUSH_PIVOT_LEFT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_memory.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_IS_FULL
+</UL>
+<BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[1e]"></a>MEMORY_PUSH_PIVOT_RIGHT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_memory.o(.text))
+<BR><BR>[Calls]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_IS_FULL
+</UL>
+<BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[1f]"></a>MEMORY_GET_COUNT</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_memory.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[20]"></a>MEMORY_IS_FULL</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_memory.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_PUSH_PIVOT_RIGHT
+<LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_PUSH_PIVOT_LEFT
+<LI><a href="#[1c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MEMORY_PUSH_FORWARD
+<LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+
+<P><STRONG><a name="[21]"></a>MEMORY_CLEAR</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, rk_memory.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+</UL>
+<P>
+<H3>
+Local Symbols
+</H3>
+<P><STRONG><a name="[1]"></a>NmiSR</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup.o(RESET))
+<BR><BR>[Calls]<UL><LI><a href="#[1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NmiSR
+</UL>
+<BR>[Called By]<UL><LI><a href="#[1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;NmiSR
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> startup.o(RESET)
+</UL>
+<P><STRONG><a name="[2]"></a>FaultISR</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup.o(RESET))
+<BR><BR>[Calls]<UL><LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FaultISR
+</UL>
+<BR>[Called By]<UL><LI><a href="#[2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;FaultISR
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> startup.o(RESET)
+</UL>
+<P><STRONG><a name="[3]"></a>IntDefaultHandler</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, startup.o(RESET))
+<BR><BR>[Calls]<UL><LI><a href="#[3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IntDefaultHandler
+</UL>
+<BR>[Called By]<UL><LI><a href="#[3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;IntDefaultHandler
+</UL>
+<BR>[Address Reference Count : 1]<UL><LI> startup.o(RESET)
+</UL><P>
+<H3>
+Undefined Global Symbols
+</H3><HR></body></html>
