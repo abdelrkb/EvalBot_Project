@@ -46,78 +46,73 @@ MOVE_FORWARD        EQU 1
 MOVE_PIVOT_LEFT     EQU 2
 MOVE_PIVOT_RIGHT    EQU 3
 
-;; Durée estimée du recul (à calibrer)
-RECUL_DURATION      EQU 1475    ; Correspond à 15 clignotements
+RECUL_DURATION      EQU 1475           ; Durée du recul (15 clignotements)
 
 __main
         ;--------------------------------------------------
-        ; Initialisation complète
+        ; Initialisation complète du système
         ;--------------------------------------------------
-        BL  MOTEUR_INIT
-        BL  IO_INIT
-        BL  MEMORY_INIT
+        BL  MOTEUR_INIT                ; Init PWM et moteurs
+        BL  IO_INIT                    ; Init LEDs, bumpers, switches
+        BL  MEMORY_INIT                ; Init mémoire trajectoire
         
-        BL  MOTEUR_DROIT_AVANT
+        BL  MOTEUR_DROIT_AVANT         ; Configurer direction avant
         BL  MOTEUR_GAUCHE_AVANT
-        BL  ALL_LEDS_OFF
+        BL  ALL_LEDS_OFF               ; Éteindre les LEDs
 
 ;--------------------------------------------------
 ; Attente SW1 pour démarrer exploration
 ;--------------------------------------------------
 wait_start
-        BL  SW1_READ
+        BL  SW1_READ                   ; Lire état du switch 1
         cmp r0, #0
-        bne wait_start
+        bne wait_start                 ; Boucler tant que non pressé
         
         ; Anti-rebond
         BL  WAIT_SHORT
 wait_release_sw1
         BL  SW1_READ
         cmp r0, #0
-        beq wait_release_sw1
+        beq wait_release_sw1           ; Attendre relâchement
         
-        ; Effacer l'ancienne mémoire
-        BL  MEMORY_CLEAR
-        
-        ; LED1 ON = Mode exploration
-        BL  LED1_ON
+        ; Préparer nouvelle exploration
+        BL  MEMORY_CLEAR               ; Effacer ancienne trajectoire
+        BL  MOTEUR_DROIT_AVANT         ; Forcer direction avant
+        BL  MOTEUR_GAUCHE_AVANT
+        BL  LED1_ON                    ; Signaler mode exploration
 
 ;==================================================
 ; MODE EXPLORATION
 ;==================================================
 exploration_mode
-        BL  MOTEUR_DROIT_ON
+        BL  MOTEUR_DROIT_ON            ; Activer les moteurs
         BL  MOTEUR_GAUCHE_ON
-        
-        ; Compteur pour enregistrer le temps d'avancement
-        mov r8, #0              ; r8 = compteur de temps
+        mov r8, #0                     ; r8 = compteur de distance
 
 check_during_exploration
-        ; Incrémenter le compteur de temps
-        add r8, r8, #1
+        add r8, r8, #1                 ; Incrémenter distance parcourue
         
-        ; Vérifier SW2 (retour immédiat)
+        ; Vérifier retour immédiat (SW2)
         BL  SW2_READ
         cmp r0, #0
-        beq check_sw2_pressed
+        beq check_sw2_pressed          ; Si pressé, retour base
         
-        ; Vérifier bumper DROIT
+        ; Vérifier obstacle droit
         BL  BUMPER_RIGHT_READ
         cmp r0, #0
-        beq obstacle_right_explore
+        beq obstacle_right_explore     ; Si pressé, traiter obstacle
         
-        ; Vérifier bumper GAUCHE
+        ; Vérifier obstacle gauche
         BL  BUMPER_LEFT_READ
         cmp r0, #0
         beq obstacle_left_explore
         
-        ; Vérifier si mémoire pleine
+        ; Vérifier saturation mémoire
         BL  MEMORY_IS_FULL
         cmp r0, #1
-        beq memory_full_alert
+        beq memory_full_alert          ; Si pleine, forcer retour
         
-        ; Continuer d'avancer
-        BL  WAIT_STEP           ; Petit délai
+        BL  WAIT_STEP                  ; Petit délai entre itérations
         b   check_during_exploration
 
 ;--------------------------------------------------
@@ -130,36 +125,35 @@ check_sw2_pressed
 ; Obstacle DROIT détecté en exploration
 ;--------------------------------------------------
 obstacle_right_explore
-        ; Arrêt
+        ; Arrêt immédiat
         BL  MOTEUR_DROIT_OFF
         BL  MOTEUR_GAUCHE_OFF
         BL  WAIT_SHORT
         
-        ; Recul avec LEDs
+        ; Recul avec signal visuel
         BL  MOTEUR_DROIT_ARRIERE
         BL  MOTEUR_GAUCHE_ARRIERE
         BL  MOTEUR_DROIT_ON
         BL  MOTEUR_GAUCHE_ON
-        BL  RECUL_AVEC_LEDS
+        BL  RECUL_AVEC_LEDS            ; 15 clignotements
         
         BL  MOTEUR_DROIT_OFF
         BL  MOTEUR_GAUCHE_OFF
         BL  WAIT_SHORT
         
-        ; CORRECTION : Soustraire le temps de recul du compteur
-        ; Distance nette = Distance avancée - Distance reculée
+        ; Corriger la distance nette
         ldr r0, =RECUL_DURATION
-        subs r8, r8, r0         ; r8 = r8 - temps_recul
-        bpl save_forward_right  ; Si positif, ok
-        mov r8, #0              ; Si négatif, mettre à 0
+        subs r8, r8, r0                ; Distance nette = avance - recul
+        bpl save_forward_right         ; Si positif, ok
+        mov r8, #0                     ; Si négatif, clamp à 0
         
 save_forward_right
-        ; Enregistrer le temps d'avancement NET
+        ; Enregistrer le mouvement
         mov r0, r8
         BL  MEMORY_PUSH_FORWARD
-        mov r8, #0              ; Reset compteur
+        mov r8, #0                     ; Reset compteur
         
-        ; Pivot GAUCHE
+        ; Pivoter à GAUCHE (opposé de l'obstacle)
         BL  MOTEUR_GAUCHE_ARRIERE
         BL  MOTEUR_DROIT_AVANT
         BL  MOTEUR_GAUCHE_ON
@@ -168,27 +162,24 @@ save_forward_right
         
         BL  MOTEUR_DROIT_OFF
         BL  MOTEUR_GAUCHE_OFF
+        BL  MEMORY_PUSH_PIVOT_LEFT     ; Enregistrer le pivot
         
-        ; Enregistrer le pivot GAUCHE
-        BL  MEMORY_PUSH_PIVOT_LEFT
-        
-        ; Remettre en mode AVANT
+        ; Reprendre exploration
         BL  MOTEUR_DROIT_AVANT
         BL  MOTEUR_GAUCHE_AVANT
         BL  LED1_ON
-        
         b   exploration_mode
 
 ;--------------------------------------------------
 ; Obstacle GAUCHE détecté en exploration
 ;--------------------------------------------------
 obstacle_left_explore
-        ; Arrêt
+        ; Arrêt immédiat
         BL  MOTEUR_DROIT_OFF
         BL  MOTEUR_GAUCHE_OFF
         BL  WAIT_SHORT
         
-        ; Recul avec LEDs
+        ; Recul avec signal visuel
         BL  MOTEUR_DROIT_ARRIERE
         BL  MOTEUR_GAUCHE_ARRIERE
         BL  MOTEUR_DROIT_ON
@@ -199,19 +190,18 @@ obstacle_left_explore
         BL  MOTEUR_GAUCHE_OFF
         BL  WAIT_SHORT
         
-        ; CORRECTION : Soustraire le temps de recul
+        ; Corriger la distance nette
         ldr r0, =RECUL_DURATION
         subs r8, r8, r0
         bpl save_forward_left
         mov r8, #0
         
 save_forward_left
-        ; Enregistrer le temps d'avancement NET
         mov r0, r8
         BL  MEMORY_PUSH_FORWARD
         mov r8, #0
         
-        ; Pivot DROITE
+        ; Pivoter à DROITE (opposé de l'obstacle)
         BL  MOTEUR_DROIT_ARRIERE
         BL  MOTEUR_GAUCHE_AVANT
         BL  MOTEUR_DROIT_ON
@@ -220,15 +210,12 @@ save_forward_left
         
         BL  MOTEUR_DROIT_OFF
         BL  MOTEUR_GAUCHE_OFF
-        
-        ; Enregistrer le pivot DROITE
         BL  MEMORY_PUSH_PIVOT_RIGHT
         
-        ; Remettre en mode AVANT
+        ; Reprendre exploration
         BL  MOTEUR_DROIT_AVANT
         BL  MOTEUR_GAUCHE_AVANT
         BL  LED1_ON
-        
         b   exploration_mode
 
 ;--------------------------------------------------
@@ -238,7 +225,7 @@ memory_full_alert
         BL  MOTEUR_DROIT_OFF
         BL  MOTEUR_GAUCHE_OFF
         
-        ; Clignoter 5 fois = alerte mémoire pleine
+        ; Alerte visuelle : 5 clignotements
         mov r4, #5
 alert_blink
         BL  ALL_LEDS_ON
@@ -248,7 +235,6 @@ alert_blink
         subs r4, r4, #1
         bne alert_blink
         
-        ; Forcer retour à la base
         b   go_return_base
 
 ;==================================================
@@ -262,40 +248,37 @@ go_return_base
         BL  MEMORY_PUSH_FORWARD
 skip_last_forward
         
-        ; Arrêter les moteurs
+        ; Arrêt et passage en mode retour
         BL  MOTEUR_DROIT_OFF
         BL  MOTEUR_GAUCHE_OFF
         BL  ALL_LEDS_OFF
         BL  WAIT_SHORT
+        BL  LED2_ON                    ; Signaler mode retour
         
-        ; LED2 ON = Mode retour
-        BL  LED2_ON
-        
-        ; Obtenir le nombre de mouvements
+        ; Préparer la lecture de trajectoire
         BL  MEMORY_GET_COUNT
-        mov r9, r0              ; r9 = nombre total de mouvements
+        mov r9, r0                     ; r9 = nombre de mouvements
         
-        ; Si aucun mouvement, on est déjà à la base
         cmp r9, #0
-        beq arrived_at_base
+        beq arrived_at_base            ; Aucun mouvement, déjà à la base
 
 ;--------------------------------------------------
 ; Boucle de retour (rejouer à l'envers)
 ;--------------------------------------------------
 return_loop
-        subs r9, r9, #1         ; Décrémenter index (du dernier au premier)
-        blt arrived_at_base     ; Si index < 0, terminé
+        subs r9, r9, #1                ; Décrémenter index
+        blt arrived_at_base            ; Si < 0, terminé
         
-        ; Calculer adresse du mouvement : MEMORY_BASE + (index * 8)
+        ; Calculer adresse du mouvement : base + (index * 8)
         ldr r10, =MEMORY_BASE
-        lsl r0, r9, #3
-        add r10, r10, r0        ; r10 = adresse du mouvement
+        lsl r0, r9, #3                 ; Offset = index * 8
+        add r10, r10, r0
         
-        ; Lire type de mouvement
-        ldr r0, [r10]           ; r0 = type
-        ldr r1, [r10, #4]       ; r1 = durée
+        ; Lire le mouvement
+        ldr r0, [r10]                  ; r0 = type
+        ldr r1, [r10, #4]              ; r1 = durée
         
-        ; Traiter selon le type
+        ; Dispatcher selon le type
         cmp r0, #MOVE_FORWARD
         beq return_forward
         cmp r0, #MOVE_PIVOT_LEFT
@@ -303,7 +286,7 @@ return_loop
         cmp r0, #MOVE_PIVOT_RIGHT
         beq return_pivot_right
         
-        b return_loop           ; Type inconnu, continuer
+        b return_loop                  ; Type inconnu, continuer
 
 ;--------------------------------------------------
 ; Retour : Inverser AVANCER = RECULER
@@ -314,7 +297,7 @@ return_forward
         BL  MOTEUR_DROIT_ON
         BL  MOTEUR_GAUCHE_ON
         
-        ; Avancer pendant la durée enregistrée
+        ; Reculer pendant la durée enregistrée
 return_forward_wait
         subs r1, r1, #1
         ble return_forward_done
@@ -330,7 +313,7 @@ return_forward_done
 ; Retour : Inverser PIVOT_LEFT = PIVOT_RIGHT
 ;--------------------------------------------------
 return_pivot_left
-        BL  MOTEUR_DROIT_ARRIERE
+        BL  MOTEUR_DROIT_ARRIERE       ; Pivoter à droite
         BL  MOTEUR_GAUCHE_AVANT
         BL  MOTEUR_DROIT_ON
         BL  MOTEUR_GAUCHE_ON
@@ -345,7 +328,7 @@ return_pivot_left
 ; Retour : Inverser PIVOT_RIGHT = PIVOT_LEFT
 ;--------------------------------------------------
 return_pivot_right
-        BL  MOTEUR_GAUCHE_ARRIERE
+        BL  MOTEUR_GAUCHE_ARRIERE      ; Pivoter à gauche
         BL  MOTEUR_DROIT_AVANT
         BL  MOTEUR_GAUCHE_ON
         BL  MOTEUR_DROIT_ON
@@ -364,7 +347,7 @@ arrived_at_base
         BL  MOTEUR_GAUCHE_OFF
         BL  ALL_LEDS_OFF
         
-        ; Célébration : clignoter 10 fois
+        ; Célébration : 10 clignotements
         mov r4, #10
 celebration_blink
         BL  ALL_LEDS_ON
@@ -374,14 +357,17 @@ celebration_blink
         subs r4, r4, #1
         bne celebration_blink
         
-        ; Retour au début
-        b   wait_start
+        b   wait_start                 ; Nouvelle exploration
 
 ;==================================================
 ; FONCTIONS AUXILIAIRES
 ;==================================================
+
+;--------------------------------------------------
+; Recul avec signal visuel (15 clignotements)
+;--------------------------------------------------
 RECUL_AVEC_LEDS
-        push {r4, lr}
+        push {r4, lr}                  ; Sauvegarder r4 et LR
         mov r4, #15
 blink_loop
         BL  ALL_LEDS_ON
@@ -390,8 +376,11 @@ blink_loop
         BL  WAIT_BLINK
         subs r4, r4, #1
         bne blink_loop
-        pop {r4, pc}
+        pop {r4, pc}                   ; Restaurer et retourner
 
+;--------------------------------------------------
+; Attente courte (anti-rebond, transitions)
+;--------------------------------------------------
 WAIT_SHORT
         push {r1, lr}
         ldr r1, =0x3FFFF
@@ -400,14 +389,20 @@ wait_short_loop
         bne wait_short_loop
         pop {r1, pc}
 
+;--------------------------------------------------
+; Petit délai (pas de temps pour avancement)
+;--------------------------------------------------
 WAIT_STEP
         push {r1, lr}
-        ldr r1, =0x1FFF         ; Petit pas de temps
+        ldr r1, =0x1FFF
 wait_step_loop
         subs r1, #1
         bne wait_step_loop
         pop {r1, pc}
 
+;--------------------------------------------------
+; Délai pour clignotement visible
+;--------------------------------------------------
 WAIT_BLINK
         push {r1, lr}
         ldr r1, =0x5FFFF
@@ -416,9 +411,12 @@ wait_blink_loop
         bne wait_blink_loop
         pop {r1, pc}
 
+;--------------------------------------------------
+; Délai pour rotation (calibré empiriquement)
+;--------------------------------------------------
 WAIT_PIVOT
         push {r1, lr}
-        ldr r1, =0xAFFFFF       ; Durée du pivot (à calibrer pour 45°)
+        ldr r1, =0xAFFFFF
 wait_pivot_loop
         subs r1, #1
         bne wait_pivot_loop

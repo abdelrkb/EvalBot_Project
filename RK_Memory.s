@@ -7,8 +7,8 @@ MAX_MOVES           EQU 100             ; Nombre max de mouvements stockés
 
 ;; Types de mouvements
 MOVE_FORWARD        EQU 1               ; Avancer
-MOVE_PIVOT_LEFT     EQU 2               ; Pivoter gauche (45°)
-MOVE_PIVOT_RIGHT    EQU 3               ; Pivoter droite (45°)
+MOVE_PIVOT_LEFT     EQU 2               ; Pivoter gauche
+MOVE_PIVOT_RIGHT    EQU 3               ; Pivoter droite
 
 ;; Structure d'un mouvement en mémoire (2 mots de 32 bits = 8 octets)
 ;; [Type (4 octets)] [Durée (4 octets)]
@@ -40,14 +40,13 @@ move_count      DCD     0               ; Compteur de mouvements
         AREA    |.text|, CODE, READONLY
 
 MEMORY_INIT
-        push {r0, r1, lr}
+        push {r0, r1, lr}               ; Sauvegarder les registres
         
-        ; Réinitialiser le compteur
-        ldr r0, =move_count
-        mov r1, #0
-        str r1, [r0]
+        ldr r0, =move_count             ; Charger l'adresse du compteur
+        mov r1, #0                      ; Initialiser à 0
+        str r1, [r0]                    ; Écrire en mémoire
         
-        pop {r0, r1, pc}
+        pop {r0, r1, pc}                ; Restaurer et retourner
 
 ;--------------------------------------------------
 ; Enregistrer un mouvement AVANCER
@@ -56,29 +55,27 @@ MEMORY_INIT
 MEMORY_PUSH_FORWARD
         push {r1, r2, r3, r4, lr}
         
-        ; Sauvegarder la durée
-        mov r4, r0
+        mov r4, r0                      ; Sauvegarder la durée dans r4
         
-        ; Vérifier si mémoire pleine
+        ; Vérifier si la mémoire est pleine
         bl MEMORY_IS_FULL
         cmp r0, #1
-        beq push_forward_full
+        beq push_forward_full           ; Si pleine, ne rien faire
         
-        ; Calculer l'adresse de stockage
+        ; Calculer l'adresse où stocker le mouvement
         ldr r1, =move_count
         ldr r2, [r1]                    ; r2 = index actuel
         
-        ; Adresse = MEMORY_BASE + (index * 8)
-        ldr r3, =MEMORY_BASE
-        lsl r0, r2, #3                  ; index * 8
-        add r3, r3, r0                  ; r3 = adresse de stockage
+        ldr r3, =MEMORY_BASE            ; r3 = adresse de base
+        lsl r0, r2, #3                  ; r0 = index * 8 (chaque mouvement = 8 octets)
+        add r3, r3, r0                  ; r3 = adresse finale
         
-        ; Stocker le type de mouvement
+        ; Stocker le type
         mov r0, #MOVE_FORWARD
-        str r0, [r3]                    ; [adresse] = type
+        str r0, [r3]                    ; Écrire le type à l'adresse
         
         ; Stocker la durée
-        str r4, [r3, #4]                ; [adresse+4] = durée
+        str r4, [r3, #4]                ; Écrire la durée 4 octets après
         
         ; Incrémenter le compteur
         add r2, r2, #1
@@ -88,28 +85,28 @@ push_forward_full
         pop {r1, r2, r3, r4, pc}
 
 ;--------------------------------------------------
-; Enregistrer un PIVOT GAUCHE (45°)
+; Enregistrer un PIVOT GAUCHE
 ;--------------------------------------------------
 MEMORY_PUSH_PIVOT_LEFT
         push {r0, r1, r2, r3, lr}
         
-        ; Vérifier si mémoire pleine
+        ; Vérifier si la mémoire est pleine
         bl MEMORY_IS_FULL
         cmp r0, #1
         beq push_left_full
         
         ; Calculer l'adresse
         ldr r1, =move_count
-        ldr r2, [r1]
+        ldr r2, [r1]                    ; Index actuel
         ldr r3, =MEMORY_BASE
-        lsl r0, r2, #3
+        lsl r0, r2, #3                  ; Offset = index * 8
         add r3, r3, r0
         
         ; Stocker le type
         mov r0, #MOVE_PIVOT_LEFT
         str r0, [r3]
         
-        ; Durée = 0 (pas utilisée pour les pivots)
+        ; Pas de durée pour les pivots
         mov r0, #0
         str r0, [r3, #4]
         
@@ -121,28 +118,28 @@ push_left_full
         pop {r0, r1, r2, r3, pc}
 
 ;--------------------------------------------------
-; Enregistrer un PIVOT DROITE (45°)
+; Enregistrer un PIVOT DROITE
 ;--------------------------------------------------
 MEMORY_PUSH_PIVOT_RIGHT
         push {r0, r1, r2, r3, lr}
         
-        ; Vérifier si mémoire pleine
+        ; Vérifier si la mémoire est pleine
         bl MEMORY_IS_FULL
         cmp r0, #1
         beq push_right_full
         
         ; Calculer l'adresse
         ldr r1, =move_count
-        ldr r2, [r1]
+        ldr r2, [r1]                    ; Index actuel
         ldr r3, =MEMORY_BASE
-        lsl r0, r2, #3
+        lsl r0, r2, #3                  ; Offset = index * 8
         add r3, r3, r0
         
         ; Stocker le type
         mov r0, #MOVE_PIVOT_RIGHT
         str r0, [r3]
         
-        ; Durée = 0
+        ; Pas de durée pour les pivots
         mov r0, #0
         str r0, [r3, #4]
         
@@ -159,9 +156,9 @@ push_right_full
 ;--------------------------------------------------
 MEMORY_GET_COUNT
         push {r1, lr}
-        ldr r1, =move_count
-        ldr r0, [r1]
-        pop {r1, pc}
+        ldr r1, =move_count             ; Charger l'adresse du compteur
+        ldr r0, [r1]                    ; Lire la valeur
+        pop {r1, pc}                    ; Retourner avec r0 = count
 
 ;--------------------------------------------------
 ; Vérifier si la mémoire est pleine
@@ -170,9 +167,9 @@ MEMORY_GET_COUNT
 MEMORY_IS_FULL
         push {r1, r2, lr}
         ldr r1, =move_count
-        ldr r2, [r1]
-        cmp r2, #MAX_MOVES
-        bge memory_full
+        ldr r2, [r1]                    ; Lire le nombre actuel
+        cmp r2, #MAX_MOVES              ; Comparer avec le max
+        bge memory_full                 ; Si >= 100, c'est plein
         mov r0, #0                      ; Pas pleine
         b memory_check_end
 memory_full
@@ -185,9 +182,9 @@ memory_check_end
 ;--------------------------------------------------
 MEMORY_CLEAR
         push {r0, r1, lr}
-        ldr r0, =move_count
-        mov r1, #0
-        str r1, [r0]
+        ldr r0, =move_count             ; Charger l'adresse
+        mov r1, #0                      ; Mettre à 0
+        str r1, [r0]                    ; Réinitialiser le compteur
         pop {r0, r1, pc}
 
         END
