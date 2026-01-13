@@ -154,4 +154,4 @@ Retour :
 
 ---
 
-**Projet réalisé dans le cadre du module Systèmes Embarqués - E3FI-3L-s1**
+**Projet réalisé dans le cadre du module Architecture - E3FI-3L-s1**
